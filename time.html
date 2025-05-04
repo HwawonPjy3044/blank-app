@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>타이머</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      padding: 50px;
+      background-color: #f0f8ff;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+    }
+
+    .timer-display {
+      font-size: 48px;
+      margin: 20px 0;
+      color: #333;
+    }
+
+    .controls {
+      margin: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin: 5px;
+      border: none;
+      border-radius: 8px;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    select {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>타이머</h1>
+
+  <div>
+    <label for="time-select">시간 선택:</label>
+    <select id="time-select">
+      <option value="300">5분</option>
+      <option value="600">10분</option>
+    </select>
+  </div>
+
+  <div class="timer-display" id="timer">00:00</div>
+
+  <div class="controls">
+    <button onclick="startTimer()">시작</button>
+    <button onclick="stopTimer()">종료</button>
+  </div>
+
+  <script>
+    let timer;
+    let remainingTime = 0;
+
+    function startTimer() {
+      const select = document.getElementById('time-select');
+      remainingTime = parseInt(select.value);
+
+      updateDisplay();
+      if (timer) clearInterval(timer); // 기존 타이머 제거
+      timer = setInterval(() => {
+        if (remainingTime <= 0) {
+          clearInterval(timer);
+          alert("타이머 종료!");
+        } else {
+          remainingTime--;
+          updateDisplay();
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timer);
+      remainingTime = 0;
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      const minutes = String(Math.floor(remainingTime / 60)).padStart(2, '0');
+      const seconds = String(remainingTime % 60).padStart(2, '0');
+      document.getElementById('timer').textContent = `${minutes}:${seconds}`;
+    }
+  </script>
+
+</body>
+</html>
