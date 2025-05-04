@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>과일 선호도 투표</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f9f9f9;
+      padding: 40px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .apple {
+      background-color: #ff4d4d;
+    }
+
+    .pear {
+      background-color: #ffd11a;
+      color: black;
+    }
+
+    .result {
+      background-color: #4CAF50;
+    }
+
+    canvas {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>당신이 더 좋아하는 과일은?</h1>
+  <button class="apple" onclick="vote('apple')">🍎 사과</button>
+  <button class="pear" onclick="vote('pear')">🍐 배</button>
+  <br>
+  <button class="result" onclick="showResult()">결과 보기</button>
+
+  <canvas id="resultChart" width="400" height="400" style="display:none;"></canvas>
+
+  <script>
+    let votes = { apple: 0, pear: 0 };
+
+    function vote(fruit) {
+      votes[fruit]++;
+      alert(`${fruit === 'apple' ? '사과' : '배'}에 투표하셨습니다!`);
+    }
+
+    function showResult() {
+      const ctx = document.getElementById('resultChart').getContext('2d');
+      document.getElementById('resultChart').style.display = 'block';
+
+      // 차트가 중복 생성되지 않도록 이전 차트 제거
+      if (window.resultChart) window.resultChart.destroy();
+
+      window.resultChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ['사과', '배'],
+          datasets: [{
+            data: [votes.apple, votes.pear],
+            backgroundColor: ['#ff4d4d', '#ffd11a'],
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+            },
+            title: {
+              display: true,
+              text: '투표 결과'
+            }
+          }
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
