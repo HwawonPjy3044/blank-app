@@ -39,8 +39,10 @@
       background-color: #4CAF50;
     }
 
-    canvas {
-      margin-top: 30px;
+    #chart-container {
+      width: 400px;
+      margin: 30px auto;
+      display: none; /* 숨긴 상태에서 렌더링 안 되도록 주의 */
     }
   </style>
 </head>
@@ -52,10 +54,13 @@
   <br>
   <button class="result" onclick="showResult()">결과 보기</button>
 
-  <canvas id="resultChart" width="400" height="400" style="display:none;"></canvas>
+  <div id="chart-container">
+    <canvas id="resultChart" width="400" height="400"></canvas>
+  </div>
 
   <script>
     let votes = { apple: 0, pear: 0 };
+    let resultChart = null;
 
     function vote(fruit) {
       votes[fruit]++;
@@ -63,34 +68,37 @@
     }
 
     function showResult() {
-      const ctx = document.getElementById('resultChart').getContext('2d');
-      document.getElementById('resultChart').style.display = 'block';
+      const container = document.getElementById('chart-container');
+      container.style.display = 'block';
 
-      // 차트가 중복 생성되지 않도록 이전 차트 제거
-      if (window.resultChart) window.resultChart.destroy();
+      setTimeout(() => {
+        const ctx = document.getElementById('resultChart').getContext('2d');
 
-      window.resultChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-          labels: ['사과', '배'],
-          datasets: [{
-            data: [votes.apple, votes.pear],
-            backgroundColor: ['#ff4d4d', '#ffd11a'],
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              position: 'bottom',
-            },
-            title: {
-              display: true,
-              text: '투표 결과'
+        if (resultChart) resultChart.destroy();
+
+        resultChart = new Chart(ctx, {
+          type: 'pie',
+          data: {
+            labels: ['사과', '배'],
+            datasets: [{
+              data: [votes.apple, votes.pear],
+              backgroundColor: ['#ff4d4d', '#ffd11a'],
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'bottom',
+              },
+              title: {
+                display: true,
+                text: '투표 결과'
+              }
             }
           }
-        }
-      });
+        });
+      }, 100); // DOM 반영 후 차트 생성
     }
   </script>
 
